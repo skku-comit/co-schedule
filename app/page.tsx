@@ -1,79 +1,46 @@
-'use client';
+import dynamic from 'next/dynamic';
+import React from 'react';
+import 'smart-webcomponents-react/source/styles/smart.default.css';
 
-import {
-  Calendar as BigCalendar,
-  momentLocalizer,
-  Views
-} from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+// Dynamically import the Scheduler component without SSR
+const Scheduler = dynamic(() => import('smart-webcomponents-react/scheduler'), {
+  ssr: false, // Disable server-side rendering for this component
+});
 
-moment.locale("en-GB");
-//momentLocalizer(moment);
-const localizer = momentLocalizer(moment);
+export default function App() {
+  const today = new Date();
+  const currentDate = today.getDate();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
 
-const events = [
-  {
-    id: 0,
-    title: "Board meeting",
-    start: new Date(2018, 0, 29, 9, 0, 0),
-    end: new Date(2018, 0, 29, 13, 0, 0),
-    resourceId: 1
-  },
-  {
-    id: 1,
-    title: "MS training",
-    allDay: true,
-    start: new Date(2018, 0, 29, 14, 0, 0),
-    end: new Date(2018, 0, 29, 16, 30, 0),
-    resourceId: 2
-  },
-  {
-    id: 2,
-    title: "Team lead meeting",
-    start: new Date(2018, 0, 29, 8, 30, 0),
-    end: new Date(2018, 0, 29, 12, 30, 0),
-    resourceId: 3
-  },
-  {
-    id: 11,
-    title: "Birthday Party",
-    start: new Date(2018, 0, 30, 7, 0, 0),
-    end: new Date(2018, 0, 30, 10, 30, 0),
-    resourceId: 4
-  }
-];
+  const data = [
+    {
+      label: 'Google AdWords Strategy',
+      dateStart: new Date(currentYear, currentMonth, currentDate, 9, 0),
+      dateEnd: new Date(currentYear, currentMonth, currentDate, 10, 30),
+      backgroundColor: '#E67C73',
+      borderColor: '#E67C73',
+    }
+  ];
 
-const resourceMap = [
-  { resourceId: 1, resourceTitle: "Board room" },
-  { resourceId: 2, resourceTitle: "Training room" },
-  { resourceId: 3, resourceTitle: "Meeting room 1" },
-  { resourceId: 4, resourceTitle: "Meeting room 2" },
-  { resourceId: 5, resourceTitle: "Meeting room 3" }
-];
+  const view = 'week';
 
-const styles = {
-  container: {
-    width: "80wh",
-    height: "60vh",
-    margin: "2em"
-  }
-};
+  const views = ['day', 'week', 'month'];
 
-export default function Home() {
+  const hourStart = 6;
+
+  const timelineDayScale = 'halfHour';
+
   return (
-    <div style={styles.container}>
-      <BigCalendar
-        selectable
-        localizer={localizer}
-        events={events}
-        defaultView={Views.DAY}
-        views={[Views.DAY, Views.WEEK, Views.MONTH]}
-        defaultDate={new Date(2018, 0, 29)}
-        resources={resourceMap}
-        resourceIdAccessor="resourceId"
-        resourceTitleAccessor="resourceTitle"
-      />
+    <div>
+      <Scheduler
+        id="scheduler"
+        view={view}
+        dataSource={data}
+        views={views}
+        hourStart={hourStart}
+        timelineDayScale={timelineDayScale}
+      ></Scheduler>
     </div>
   );
 }
